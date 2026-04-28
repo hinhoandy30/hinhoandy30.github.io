@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>从 LLM 训练到 Agent 开发：我学 LangGraph 的第一周 | Andy 的技术学习日志</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="做了一段时间 LLM 训练之后，我开始想搞清楚”用大模型做应用”到底是怎么一回事。选了 open_deep_research 这个项目作为切入点——它是一个能自动搜索、分析、输出研究报告的 Agent 系统，代码量不大，但把 LangGraph 的核心用法都覆盖到了。 这篇文章是第一周的学习记录，聊聊我踩的坑、搞懂的概念，以及一些让我豁然开朗的类比。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从 LLM 训练到 Agent 开发：我学 LangGraph 的第一周">
+<meta property="og:url" content="https://hinhoandy30.github.io/2026/04/28/langgraph-learning-week1/index.html">
+<meta property="og:site_name" content="Andy 的技术学习日志">
+<meta property="og:description" content="做了一段时间 LLM 训练之后，我开始想搞清楚”用大模型做应用”到底是怎么一回事。选了 open_deep_research 这个项目作为切入点——它是一个能自动搜索、分析、输出研究报告的 Agent 系统，代码量不大，但把 LangGraph 的核心用法都覆盖到了。 这篇文章是第一周的学习记录，聊聊我踩的坑、搞懂的概念，以及一些让我豁然开朗的类比。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-28T05:29:56.790Z">
+<meta property="article:author" content="Andy">
+<meta property="article:tag" content="Agent">
+<meta property="article:tag" content="LangChain">
+<meta property="article:tag" content="LangGraph">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Andy 的技术学习日志" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Andy 的技术学习日志</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">记录 AI / LLM / Agent 开发的学习历程</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://hinhoandy30.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-langgraph-learning-week1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/04/28/langgraph-learning-week1/" class="article-date">
+  <time class="dt-published" datetime="2026-04-27T16:00:00.000Z" itemprop="datePublished">2026-04-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      从 LLM 训练到 Agent 开发：我学 LangGraph 的第一周
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>做了一段时间 LLM 训练之后，我开始想搞清楚”用大模型做应用”到底是怎么一回事。选了 <a target="_blank" rel="noopener" href="https://github.com/langchain-ai/open_deep_research">open_deep_research</a> 这个项目作为切入点——它是一个能自动搜索、分析、输出研究报告的 Agent 系统，代码量不大，但把 LangGraph 的核心用法都覆盖到了。</p>
+<p>这篇文章是第一周的学习记录，聊聊我踩的坑、搞懂的概念，以及一些让我豁然开朗的类比。</p>
+<span id="more"></span>
+
+<h2 id="我的背景"><a href="#我的背景" class="headerlink" title="我的背景"></a>我的背景</h2><p>熟悉 LLM 训练那一套——logits、beam search、gradient accumulation 这些概念都不陌生。但 Agent 开发、Python 工程生态、后端开发，之前完全没碰过。</p>
+<p>所以这个学习过程其实很有意思：底层原理理解起来快，但工程惯例和框架用法需要从零开始建立直觉。</p>
+<hr>
+<h2 id="第一关：环境配置踩了三个坑"><a href="#第一关：环境配置踩了三个坑" class="headerlink" title="第一关：环境配置踩了三个坑"></a>第一关：环境配置踩了三个坑</h2><h3 id="坑一：所有-API-都报-SOCKS-proxy-错误"><a href="#坑一：所有-API-都报-SOCKS-proxy-错误" class="headerlink" title="坑一：所有 API 都报 SOCKS proxy 错误"></a>坑一：所有 API 都报 SOCKS proxy 错误</h3><p>项目用 <code>httpx</code> 发请求，我系统挂了 SOCKS 代理，结果三个 API 全部报错。</p>
+<p>原因是 <code>httpx</code> 默认不带 SOCKS 支持，需要单独安装可选依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uv add <span class="string">&quot;httpx[socks]&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>学到一个 Python 包管理的惯例：<code>package[extra]</code> 这种格式是安装某个包的可选功能模块，以后遇到类似报错先往这个方向想。</p>
+<h3 id="坑二：response-format-type-is-unavailable"><a href="#坑二：response-format-type-is-unavailable" class="headerlink" title="坑二：response_format type is unavailable"></a>坑二：<code>response_format type is unavailable</code></h3><p>项目用了 <code>with_structured_output</code> 来强制模型按格式输出，但第三方代理 API 报这个错。</p>
+<p>背后原因是结构化输出有两种底层策略：</p>
+<ul>
+<li><strong>ProviderStrategy</strong>：把 JSON Schema 直接发给 API，要求原生支持（OpenAI 官方 API 支持，很多代理不支持）</li>
+<li><strong>ToolStrategy</strong>：把 schema 包装成工具定义，走 function calling，兼容性更好</li>
+</ul>
+<p>解法是改成 <code>method=&quot;function_calling&quot;</code>，用兼容性更好的那种：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.with_structured_output(MySchema, method=<span class="string">&quot;function_calling&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="坑三：deepseek-reasoner-does-not-support-this-tool-choice"><a href="#坑三：deepseek-reasoner-does-not-support-this-tool-choice" class="headerlink" title="坑三：deepseek-reasoner does not support this tool_choice"></a>坑三：<code>deepseek-reasoner does not support this tool_choice</code></h3><p>我用的 <code>deepseek-v4-flash</code>，但 API 内部把它路由到了 R1（推理模型）。R1 不支持 tool calling，所以 Agent 直接挂了。</p>
+<p>解法：换成 <code>deepseek-chat</code>（DeepSeek-V3）。</p>
+<p>这里学到一个重要认知：<strong>推理模型（R1 类）不能用在需要 tool calling 的 Agent 场景</strong>。推理模型擅长深度思考，但 Agent 框架依赖工具调用来控制流程，两者目前不兼容。</p>
+<hr>
+<h2 id="搞懂-LangGraph-vs-LangChain：一直傻傻分不清楚"><a href="#搞懂-LangGraph-vs-LangChain：一直傻傻分不清楚" class="headerlink" title="搞懂 LangGraph vs LangChain：一直傻傻分不清楚"></a>搞懂 LangGraph vs LangChain：一直傻傻分不清楚</h2><p>刚开始我总是混淆这两个，遇到报错不知道该查哪个文档。</p>
+<p>后来总结出一句话区分它们：</p>
+<blockquote>
+<p><strong>LangGraph 管图，LangChain 管模型。</strong></p>
+</blockquote>
+<p>具体来说：</p>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>负责的事</th>
+<th>典型用法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LangGraph</td>
+<td>图结构、节点、边、状态机、流程控制</td>
+<td><code>StateGraph</code>, <code>add_node</code>, <code>add_edge</code></td>
+</tr>
+<tr>
+<td>LangChain</td>
+<td>模型调用、工具绑定、输出格式化</td>
+<td><code>bind_tools</code>, <code>with_structured_output</code></td>
+</tr>
+</tbody></table>
+<p>看报错的 traceback 路径就能快速判断：<code>langgraph/</code> 开头查 LangGraph 文档，<code>langchain_core/</code> 开头查 LangChain 文档。</p>
+<hr>
+<h2 id="LangGraph-的三个核心概念"><a href="#LangGraph-的三个核心概念" class="headerlink" title="LangGraph 的三个核心概念"></a>LangGraph 的三个核心概念</h2><p>理解了这三个东西，整个框架就通了。</p>
+<h3 id="State：所有节点共享的”记忆”"><a href="#State：所有节点共享的”记忆”" class="headerlink" title="State：所有节点共享的”记忆”"></a>State：所有节点共享的”记忆”</h3><p>State 是一个字典，贯穿整个执行流程，所有节点都从它读数据、往它写数据。</p>
+<p>对我来说最好的类比是：State 就像神经网络里的 hidden state，每一层（节点）都在读取和更新它。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AgentState</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: Annotated[<span class="built_in">list</span>, operator.add]  <span class="comment"># 消息历史，追加不覆盖</span></span><br><span class="line">    final_report: <span class="built_in">str</span>                         <span class="comment"># 最终输出</span></span><br></pre></td></tr></table></figure>
+
+<p><code>Annotated[list, operator.add]</code> 这个写法的意思是：多个节点同时写这个字段时，用 <code>operator.add</code> 合并（列表追加），而不是互相覆盖。这个机制叫 <strong>reducer</strong>。</p>
+<h3 id="Node：处理单元"><a href="#Node：处理单元" class="headerlink" title="Node：处理单元"></a>Node：处理单元</h3><p>Node 就是普通的 Python 函数（或者子图），接收 State，返回要更新的字段：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">my_node</span>(<span class="params">state: AgentState</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="comment"># 从 state 读数据</span></span><br><span class="line">    messages = state[<span class="string">&quot;messages&quot;</span>]</span><br><span class="line">    <span class="comment"># 做一些处理...</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;final_report&quot;</span>: <span class="string">&quot;生成的报告内容&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有意思的地方是：普通函数可以作为节点，一个完整的子图也可以作为节点挂进父图——因为编译后的子图实现了完全相同的接口。</p>
+<h3 id="Edge：控制流"><a href="#Edge：控制流" class="headerlink" title="Edge：控制流"></a>Edge：控制流</h3><p>Edge 决定执行完一个节点后跳到哪里。有三种形式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 固定跳转：A 执行完一定去 B</span></span><br><span class="line">builder.add_edge(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 条件跳转：根据函数返回值决定去哪</span></span><br><span class="line">builder.add_conditional_edges(<span class="string">&quot;A&quot;</span>, route_function)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 节点内部直接指定（最灵活）</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">my_node</span>(<span class="params">state</span>):</span><br><span class="line">    <span class="keyword">if</span> should_end:</span><br><span class="line">        <span class="keyword">return</span> Command(goto=END)</span><br><span class="line">    <span class="keyword">return</span> Command(goto=<span class="string">&quot;next_node&quot;</span>, update=&#123;<span class="string">&quot;field&quot;</span>: value&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>用训练的类比来说：Edge 就像前向传播的连接，但可以动态路由，根据中间结果决定走哪条路。</p>
+<hr>
+<h2 id="最绕的部分：约束解码是怎么工作的"><a href="#最绕的部分：约束解码是怎么工作的" class="headerlink" title="最绕的部分：约束解码是怎么工作的"></a>最绕的部分：约束解码是怎么工作的</h2><p><code>with_structured_output</code> 背后到底在做什么？这个问题我想了很久才真正搞清楚。</p>
+<p><strong>核心机制：有限状态机（FSM）+ logit masking</strong></p>
+<p>把 JSON Schema 转成一个有限状态机（FSM），FSM 的每个状态代表”当前 JSON 写到了哪里”。每次模型生成下一个 token 之前，FSM 会计算出哪些 token 是合法的，把其他所有 token 的 logit 设为 <code>-∞</code>——这样模型就只能生成符合格式的内容。</p>
+<p>这和 beam search 里的路径屏蔽很像，只不过细化到了 token 级别。</p>
+<p><strong>一个很有意思的问题</strong>：FSM 怎么知道字符串内容什么时候写完了？</p>
+<p>答案是：它不知道，也不管。当模型在写字符串内容时，”继续写”和”写结束引号”都在合法 token 集合里。什么时候结束，由模型自己的语言能力决定。FSM 只保证一件事：<strong>required 字段没写完之前，<code>}</code> 永远不在合法集合里。</strong></p>
+<p>这是”硬约束”和”模型智能”的完全分离——FSM 是纯硬代码算法，和模型权重无关，只负责格式合法性。</p>
+<hr>
+<h2 id="state-py-里那些一开始看不懂的东西"><a href="#state-py-里那些一开始看不懂的东西" class="headerlink" title="state.py 里那些一开始看不懂的东西"></a>state.py 里那些一开始看不懂的东西</h2><p>读代码时遇到的几个困惑，现在想想其实挺清晰的。</p>
+<p><strong><code>Pydantic BaseModel</code> 有两种用途</strong></p>
+<p>在这个项目里，<code>BaseModel</code> 出现在两个完全不同的场景：</p>
+<ol>
+<li><strong>structured output schema</strong>：定义模型必须输出的格式，<code>with_structured_output(MySchema)</code> 里用</li>
+<li><strong>工具定义</strong>：定义 <code>bind_tools</code> 里的工具，模型自己决定要不要调用</li>
+</ol>
+<p><code>Field(description=&quot;...&quot;)</code> 的内容会被塞进发给模型的 JSON schema，<strong>本质上是 prompt</strong>，直接影响模型的理解和输出质量。</p>
+<p><strong>为什么 State 用 <code>TypedDict</code> 而不是 <code>BaseModel</code></strong></p>
+<p>因为 LangGraph 内部把 State 当字典处理，<code>TypedDict</code> 更轻量，不需要 Pydantic 的运行时验证。<code>BaseModel</code> 用在需要验证的地方（structured output），<code>TypedDict</code> 用在 State 定义。</p>
+<p><strong>多个并发子 Agent 是怎么启动的</strong></p>
+<p>不是 LangGraph 框架做的魔法，是普通的 Python 异步并发：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">research_tasks = [researcher_subgraph.ainvoke(task) <span class="keyword">for</span> task <span class="keyword">in</span> tasks]</span><br><span class="line">results = <span class="keyword">await</span> asyncio.gather(*research_tasks)</span><br></pre></td></tr></table></figure>
+
+<p>看到这里突然觉得亲切——这就是 Python 的 <code>asyncio</code>，和 LangGraph 没什么关系。</p>
+<hr>
+<h2 id="关键概念速查表"><a href="#关键概念速查表" class="headerlink" title="关键概念速查表"></a>关键概念速查表</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>一句话说清楚</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>State</td>
+<td>所有节点共享的字典，贯穿整个执行周期</td>
+</tr>
+<tr>
+<td>Reducer</td>
+<td>多节点并发写同一字段时的合并策略（追加 or 覆盖）</td>
+</tr>
+<tr>
+<td>Node</td>
+<td>处理单元，普通函数或子图均可</td>
+</tr>
+<tr>
+<td>Edge</td>
+<td>控制流，三种形式：固定 &#x2F; 条件 &#x2F; Command</td>
+</tr>
+<tr>
+<td><code>Command(goto, update)</code></td>
+<td>节点内部动态路由 + 更新 state</td>
+</tr>
+<tr>
+<td><code>compile()</code></td>
+<td>把 builder 冻结成可执行图对象</td>
+</tr>
+<tr>
+<td>子图作为节点</td>
+<td>编译后的子图实现相同接口，可直接挂进父图</td>
+</tr>
+<tr>
+<td><code>bind_tools</code></td>
+<td>给模型注册工具，模型自己决定调不调</td>
+</tr>
+<tr>
+<td><code>with_structured_output</code></td>
+<td>强迫模型输出符合 schema 的结构</td>
+</tr>
+<tr>
+<td>ProviderStrategy</td>
+<td>JSON Schema 约束解码，需原生 API 支持</td>
+</tr>
+<tr>
+<td>ToolStrategy</td>
+<td>伪装成工具的 function calling，兼容性广</td>
+</tr>
+<tr>
+<td>ReAct 循环</td>
+<td>researcher → tools → researcher → … 直到满足退出条件</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h2><p>这周把图结构（三个 builder）和 <code>state.py</code> 基本看懂了，下一步要逐个理解节点函数：</p>
+<ol>
+<li><code>clarify_with_user</code> — 学 <code>with_structured_output</code> 实际用法</li>
+<li><code>write_research_brief</code> — 学如何把用户消息转成结构化任务</li>
+<li><code>supervisor</code> — 学 <code>bind_tools</code> 实际用法</li>
+<li><code>supervisor_tools</code> — 学工具调用解析 + 并发</li>
+<li><code>researcher</code> + <code>researcher_tools</code> — 学完整的 ReAct 循环</li>
+<li><code>compress_research</code> — 学如何处理上下文溢出</li>
+</ol>
+<p>看每个函数前先问自己：这个函数从 State 读什么、写什么、在图里的位置是哪里。这个习惯帮助很大。</p>
+<hr>
+<p>如果你也有 LLM 训练背景、想开始学 Agent 开发，open_deep_research 是个不错的切入点。代码结构清晰，把 LangGraph 的主要用法都覆盖了，踩一遍坑很值得。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hinhoandy30.github.io/2026/04/28/langgraph-learning-week1/" data-id="cuid0xTNNHkLGz-C3WHLL5fGU" data-title="从 LLM 训练到 Agent 开发：我学 LangGraph 的第一周" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LangChain/" rel="tag">LangChain</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LangGraph/" rel="tag">LangGraph</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LangChain/" rel="tag">LangChain</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LangGraph/" rel="tag">LangGraph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Agent/" style="font-size: 10px;">Agent</a> <a href="/tags/LangChain/" style="font-size: 10px;">LangChain</a> <a href="/tags/LangGraph/" style="font-size: 10px;">LangGraph</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">深度学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">四月 2026</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/04/28/langgraph-learning-week1/">从 LLM 训练到 Agent 开发：我学 LangGraph 的第一周</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Andy<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
