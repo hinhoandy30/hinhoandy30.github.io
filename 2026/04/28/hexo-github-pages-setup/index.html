@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>从零搭建个人技术博客：Hexo + GitHub Pages 完整流程 | Andy 的技术学习日志</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="记录我从零搭建这个博客的完整过程。整个流程下来大概需要 30 分钟，不需要买服务器，完全免费。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零搭建个人技术博客：Hexo + GitHub Pages 完整流程">
+<meta property="og:url" content="https://hinhoandy30.github.io/2026/04/28/hexo-github-pages-setup/index.html">
+<meta property="og:site_name" content="Andy 的技术学习日志">
+<meta property="og:description" content="记录我从零搭建这个博客的完整过程。整个流程下来大概需要 30 分钟，不需要买服务器，完全免费。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-28T05:41:34.775Z">
+<meta property="article:author" content="Andy">
+<meta property="article:tag" content="GitHub Pages">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="博客搭建">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Andy 的技术学习日志" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Andy 的技术学习日志</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">记录 AI / LLM / Agent 开发的学习历程</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://hinhoandy30.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-hexo-github-pages-setup" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/04/28/hexo-github-pages-setup/" class="article-date">
+  <time class="dt-published" datetime="2026-04-27T16:00:00.000Z" itemprop="datePublished">2026-04-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/">工具教程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      从零搭建个人技术博客：Hexo + GitHub Pages 完整流程
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>记录我从零搭建这个博客的完整过程。整个流程下来大概需要 30 分钟，不需要买服务器，完全免费。</p>
+<span id="more"></span>
+
+<h2 id="需要什么"><a href="#需要什么" class="headerlink" title="需要什么"></a>需要什么</h2><ul>
+<li>Mac 电脑（Windows 流程类似）</li>
+<li>一个 GitHub 账号</li>
+<li>会用终端输命令</li>
+</ul>
+<hr>
+<h2 id="第一步：安装必要工具"><a href="#第一步：安装必要工具" class="headerlink" title="第一步：安装必要工具"></a>第一步：安装必要工具</h2><h3 id="安装-Homebrew（Mac-包管理器）"><a href="#安装-Homebrew（Mac-包管理器）" class="headerlink" title="安装 Homebrew（Mac 包管理器）"></a>安装 Homebrew（Mac 包管理器）</h3><p>如果还没装 Homebrew，打开终端运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>装好后验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew --version</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-Node-js"><a href="#安装-Node-js" class="headerlink" title="安装 Node.js"></a>安装 Node.js</h3><p>Hexo 基于 Node.js 运行，用 Homebrew 安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br></pre></td></tr></table></figure>
+
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-Hexo"><a href="#安装-Hexo" class="headerlink" title="安装 Hexo"></a>安装 Hexo</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+
+<p>确认 Git 也已安装（Mac 一般自带）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第二步：初始化博客项目"><a href="#第二步：初始化博客项目" class="headerlink" title="第二步：初始化博客项目"></a>第二步：初始化博客项目</h2><p>在你想放博客文件的地方新建文件夹，然后初始化 Hexo：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> ~/Documents/blog</span><br><span class="line"><span class="built_in">cd</span> ~/Documents/blog</span><br><span class="line">hexo init .</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<p>完成后目录结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">blog/</span><br><span class="line">├── source/_posts/     ← 你写文章的地方（.md 文件）</span><br><span class="line">├── _config.yml        ← 博客配置文件</span><br><span class="line">├── themes/            ← 主题</span><br><span class="line">├── scaffolds/         ← 文章模板</span><br><span class="line">└── public/            ← 自动生成的 HTML（不用手动改）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第三步：配置博客基本信息"><a href="#第三步：配置博客基本信息" class="headerlink" title="第三步：配置博客基本信息"></a>第三步：配置博客基本信息</h2><p>打开 <code>_config.yml</code>，修改以下部分：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 博客基本信息</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">你的博客标题</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">副标题</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">博客描述</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">你的名字</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">&#x27;Asia/Shanghai&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 博客地址（把 username 换成你的 GitHub 用户名）</span></span><br><span class="line"><span class="attr">url:</span> <span class="string">https://username.github.io</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第四步：在-GitHub-创建仓库"><a href="#第四步：在-GitHub-创建仓库" class="headerlink" title="第四步：在 GitHub 创建仓库"></a>第四步：在 GitHub 创建仓库</h2><ol>
+<li>登录 GitHub，点右上角 <strong>+</strong> → <strong>New repository</strong></li>
+<li>Repository name 填写 <strong><code>你的用户名.github.io</code></strong>（必须和 GitHub 用户名完全一致）</li>
+<li>设为 <strong>Public</strong></li>
+<li><strong>不要</strong>勾选 “Initialize with README”</li>
+<li>点 <strong>Create repository</strong></li>
+</ol>
+<hr>
+<h2 id="第五步：配置-SSH-密钥（一次性）"><a href="#第五步：配置-SSH-密钥（一次性）" class="headerlink" title="第五步：配置 SSH 密钥（一次性）"></a>第五步：配置 SSH 密钥（一次性）</h2><p>SSH 密钥让你的电脑和 GitHub 之间建立信任，之后每次发布不需要输密码。</p>
+<h3 id="生成密钥"><a href="#生成密钥" class="headerlink" title="生成密钥"></a>生成密钥</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t ed25519 -C <span class="string">&quot;你的GitHub注册邮箱&quot;</span> -f ~/.ssh/id_ed25519 -N <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查看公钥"><a href="#查看公钥" class="headerlink" title="查看公钥"></a>查看公钥</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> ~/.ssh/id_ed25519.pub</span><br></pre></td></tr></table></figure>
+
+<p>复制输出的全部内容（以 <code>ssh-ed25519</code> 开头）。</p>
+<h3 id="添加到-GitHub"><a href="#添加到-GitHub" class="headerlink" title="添加到 GitHub"></a>添加到 GitHub</h3><ol>
+<li>GitHub 头像 → <strong>Settings</strong> → <strong>SSH and GPG keys</strong></li>
+<li>点 <strong>New SSH key</strong></li>
+<li>Title 随便填（比如 <code>MacBook</code>）</li>
+<li>把刚才复制的公钥粘贴进去</li>
+<li>点 <strong>Add SSH key</strong></li>
+</ol>
+<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<p>看到 <code>Hi 你的用户名! You&#39;ve successfully authenticated</code> 就成功了。</p>
+<hr>
+<h2 id="第六步：配置部署"><a href="#第六步：配置部署" class="headerlink" title="第六步：配置部署"></a>第六步：配置部署</h2><p>安装 Hexo 的 Git 部署插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>_config.yml</code> 末尾添加部署配置（把用户名替换掉）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:你的用户名/你的用户名.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第七步：写第一篇文章"><a href="#第七步：写第一篇文章" class="headerlink" title="第七步：写第一篇文章"></a>第七步：写第一篇文章</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">&quot;我的第一篇博客&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这会在 <code>source/_posts/</code> 生成一个 <code>.md</code> 文件，用任何文本编辑器打开写内容。</p>
+<p>文章头部格式：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章标题</span><br><span class="line">date: 2026-04-28</span><br><span class="line">tags: [标签1, 标签2]</span><br><span class="line"><span class="section">categories: [分类名]</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">文章正文从这里开始，用普通 Markdown 语法写就行。</span><br><span class="line"></span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">这行 <span class="code">`more`</span> 注释之前的内容会显示在首页列表，之后的内容需要点进文章才能看到。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第八步：本地预览"><a href="#第八步：本地预览" class="headerlink" title="第八步：本地预览"></a>第八步：本地预览</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+
+<p>打开浏览器访问 <code>http://localhost:4000</code>，确认样式和内容没问题后再发布。</p>
+<p><code>Ctrl+C</code> 停止预览服务器。</p>
+<hr>
+<h2 id="第九步：发布上线"><a href="#第九步：发布上线" class="headerlink" title="第九步：发布上线"></a>第九步：发布上线</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>等一两分钟，访问 <code>https://你的用户名.github.io</code> 就能看到博客了。</p>
+<hr>
+<h2 id="日常写作流程（之后每次）"><a href="#日常写作流程（之后每次）" class="headerlink" title="日常写作流程（之后每次）"></a>日常写作流程（之后每次）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 新建文章</span></span><br><span class="line">hexo new <span class="string">&quot;文章标题&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 编辑 source/_posts/ 里对应的 .md 文件</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 本地预览（可选）</span></span><br><span class="line">hexo server</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 发布</span></span><br><span class="line">hexo generate &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p><strong>Q：<code>command not found: hexo</code></strong></p>
+<p>Node.js 刚装完需要重新打开终端，或者运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/opt/homebrew/bin:<span class="variable">$PATH</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Q：deploy 报权限错误</strong></p>
+<p>重新检查 SSH 密钥是否正确添加到 GitHub，然后用 <code>ssh -T git@github.com</code> 测试。</p>
+<p><strong>Q：发布了但网页没更新</strong></p>
+<p>GitHub Pages 有缓存，稍等几分钟。也可以强制清除本地缓存重新生成：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="目录结构总结"><a href="#目录结构总结" class="headerlink" title="目录结构总结"></a>目录结构总结</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">blog/</span><br><span class="line">├── source/_posts/     ← ✅ 你写 .md 文章的地方</span><br><span class="line">├── _config.yml        ← ✅ 博客配置（标题、部署地址等）</span><br><span class="line">│</span><br><span class="line">├── public/            ← ⛔ 自动生成，不要手动修改</span><br><span class="line">├── .deploy_git/       ← ⛔ 部署临时目录，不要管</span><br><span class="line">├── node_modules/      ← ⛔ npm 依赖，不要管</span><br><span class="line">├── themes/            ← 主题文件（换主题时才用）</span><br><span class="line">└── scaffolds/         ← 文章模板（一般不用改）</span><br></pre></td></tr></table></figure>
+
+<p>记住一句话：<strong>只需要关心 <code>source/_posts/</code> 和 <code>_config.yml</code>，其他都不用动。</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hinhoandy30.github.io/2026/04/28/hexo-github-pages-setup/" data-id="cuidp-WQhRUdltJ-Ug4pOHxjn" data-title="从零搭建个人技术博客：Hexo + GitHub Pages 完整流程" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GitHub-Pages/" rel="tag">GitHub Pages</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/04/28/langgraph-learning-week1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          从 LLM 训练到 Agent 开发：我学 LangGraph 的第一周
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/">工具教程</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub-Pages/" rel="tag">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LangChain/" rel="tag">LangChain</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LangGraph/" rel="tag">LangGraph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Agent/" style="font-size: 10px;">Agent</a> <a href="/tags/GitHub-Pages/" style="font-size: 10px;">GitHub Pages</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/LangChain/" style="font-size: 10px;">LangChain</a> <a href="/tags/LangGraph/" style="font-size: 10px;">LangGraph</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客搭建</a> <a href="/tags/%E6%95%99%E7%A8%8B/" style="font-size: 10px;">教程</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">深度学习</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">四月 2026</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/04/28/langgraph-learning-week1/">从 LLM 训练到 Agent 开发：我学 LangGraph 的第一周</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/28/hexo-github-pages-setup/">从零搭建个人技术博客：Hexo + GitHub Pages 完整流程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Andy<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
